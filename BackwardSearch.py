@@ -1,4 +1,6 @@
-#Q3
+#Here we will perform Principal Component Analysis on a self generated random Data Set We will use SKLearn's in-built Library for LDA for performing classification
+
+#Importing Libraries
 import numpy as np
 from sklearn import datasets
 import sklearn.discriminant_analysis
@@ -6,9 +8,11 @@ from matplotlib import pyplot as plt
 import pandas as pd
 from sklearn.model_selection import train_test_split
 
+#Means for each of the 10 attributes of the 2 classes.
 mean1 = [4,5,4,5,4,5,4,5,4,5]
 mean2 = [-4,-5,-4,-5,-4,-5,-4,-5,-4,-5]
 
+#Generating Covariance matrices for the 2 classes
 np.random.seed(42)
 covpre1 = 5 + 40 * np.random.randn(10, 10)
 cov1 = (np.dot(covpre1, covpre1.transpose()))
@@ -16,16 +20,18 @@ np.random.seed(42)
 covpre2 = 20 + 20 * np.random.randn(10, 10)
 cov2 = (np.dot(covpre2, covpre2.transpose()))
 
+#Generating randon data from the covariance matrices
 np.random.seed(42)
 x1 = np.random.multivariate_normal(mean1,cov1, 1000)
 np.random.seed(42)
 x2 = np.random.multivariate_normal(mean2,cov2, 1000)
 
+#Combining the Data and class values for the 2 classes
 X = np.concatenate((x1,x2))
-print(X.shape)
 Xc = np.ones(1000)
 Xc = np.concatenate((Xc, np.zeros(1000)))
 
+#Splitting Data into Training and Testing Set with a 80:20 Split
 XTrain, XTest , XcTrain, XcTest = train_test_split(X,Xc, test_size=0.2, stratify=Xc)
 
 lda = sklearn.discriminant_analysis.LinearDiscriminantAnalysis()
