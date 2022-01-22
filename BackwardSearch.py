@@ -45,39 +45,28 @@ ogClassError = (ogError/XTest.shape[0]) * 100 #Calculating percentage of errors
 classError = []
 classError.append(ogClassError)
 
-#This loop will iterate through 5 reductions in dimensions. During each loop it will first create a list to store the error rates of the test data after removing each attribute.
-#
+#We have a data set with 10 attributes. This loop will iterate through 5 reductions in dimensions. During each loop it will first create a list(subClassError) to store the error rates of the test data after removing each attribute.
+#After this another loop is run to perform predictions after removing each attribute(column). In the inner loop, we first delete the first column and find out the error rate 
+#for the classification with the remaining columns. This error rate is stored in the subClassError list. The same thing is done after removing the 2nd, 3rd coulmn and so on. 
+#Then the column whose removal caused the lowest classification error is ejected from the data set. Now we have a data set with the 9 best attributes. We perform the same process
+#with the remaining attributes 4 more times.
 for i in range(5):
-    subClassError = []
+    subClassError = [] #List to store error rates after removing each attribute
     for col in range(X.shape[1]):
-        XNew = np.delete(X,col,1)
-        XTrain, XTest , XcTrain, XcTest = train_test_split(XNew,Xc, test_size=0.2, stratify=Xc)
-        lda = sklearn.discriminant_analysis.LinearDiscriminantAnalysis()
-        lda.fit(XTrain,XcTrain)
-        prediction = lda.predict(XTest)
-        error = sum(abs(prediction - XcTest))
-        subClassError.append(error/XTest.shape[0] * 100)
-    accuracyLstSorted = np.argsort(subClassError)
-    classError.append(subClassError[accuracyLstSorted[0]])
-    X = np.delete(X,accuracyLstSorted[0],1)
+        XNew = np.delete(X,col,1) #Deleting Column
+        XTrain, XTest , XcTrain, XcTest = train_test_split(XNew,Xc, test_size=0.2, stratify=Xc) #Splitting the reduced dataset into train test set
+        lda = sklearn.discriminant_analysis.LinearDiscriminantAnalysis() #Creating Object for LDA
+        lda.fit(XTrain,XcTrain) #Fitting the LDA Model
+        prediction = lda.predict(XTest)#Performing Prediction on the model 
+        error = sum(abs(prediction - XcTest)) #Calculating number of errors
+        subClassError.append(error/XTest.shape[0] * 100) #Calculating percentage of errors
+    accuracyLstSorted = np.argsort(subClassError) #Sorting the error list in ascending order. This way we get the column whose removal caused the lowest classification error at first
+    classError.append(subClassError[accuracyLstSorted[0]]) #Adding the best classification rate to the list
+    X = np.delete(X,accuracyLstSorted[0],1) #Deleting the column whose removal caused the lowest classification error
     print(classError)
 
+#Plotting the Classification Error rate for each reduction in dimension
 plt.plot(range(1,7), classError, label = 'Classification Error(%)')
 plt.ylim([0,100])
 plt.legend()
 plt.show()
-
-# Q4
-# After Reconstruction the deconstructed data we can see that the mean square error increases on further reconstructions.
-# This is because once we deconstruct the data we have less and less data to help us reconstruct. There is a lot of data loss
-# which makes it difficult to reach the original data
-# 
-# While plotting the classification error graph of LDA after PCA we can see that, for the most part the error rate remains constant.
-# The error hangs around at approximately 45% as there is a lot of overlapping between the 2 classes. 
-# 
-# In Q3 where we are applying LDA to classify after feature selection, we can see that the classification error goes down from 45% 
-# to 40% after removing the least important dimentions. Bt removinng the least important dimensions we are reducing the overlapping
-# and making it easier to classify while retaining the most most of the information.
-# 
-# In this case we can see that feature selection is comparitively better than using PCA as we are able to reduce the classification
-# after removal of least important features
