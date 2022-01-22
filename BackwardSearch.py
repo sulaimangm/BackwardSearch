@@ -1,4 +1,4 @@
-#Here we will perform Principal Component Analysis on a self generated random Data Set We will use SKLearn's in-built Library for LDA for performing classification
+#Here we will perform Backward Search on a self generated random Data Set We will use SKLearn's in-built Library for LDA for performing classification
 
 #Importing Libraries
 import numpy as np
@@ -34,15 +34,19 @@ Xc = np.concatenate((Xc, np.zeros(1000)))
 #Splitting Data into Training and Testing Set with a 80:20 Split
 XTrain, XTest , XcTrain, XcTest = train_test_split(X,Xc, test_size=0.2, stratify=Xc)
 
-lda = sklearn.discriminant_analysis.LinearDiscriminantAnalysis()
-lda.fit(XTrain,XcTrain)
-prediction = lda.predict(XTest)
-ogError = sum(abs(prediction - XcTest))
-ogClassError = (ogError/XTest.shape[0]) * 100
+#Calculating Error Percentage for the original data
+lda = sklearn.discriminant_analysis.LinearDiscriminantAnalysis() #Creating Object for LDA
+lda.fit(XTrain,XcTrain) #Fitting the LDA Model
+prediction = lda.predict(XTest) #Performing Prediction on the model 
+ogError = sum(abs(prediction - XcTest)) #Calculating number of errors
+ogClassError = (ogError/XTest.shape[0]) * 100 #Calculating percentage of errors
+
+#Creating a list to store the error rates before and after each dimension reduction
 classError = []
 classError.append(ogClassError)
-print(classError)
 
+#This loop will iterate through 5 reductions in dimensions. During each loop it will first create a list to store the error rates of the test data after removing each attribute.
+#
 for i in range(5):
     subClassError = []
     for col in range(X.shape[1]):
