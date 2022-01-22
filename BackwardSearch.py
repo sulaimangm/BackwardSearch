@@ -1,4 +1,7 @@
-#Here we will perform Backward Search on a self generated random Data Set We will use SKLearn's in-built Library for LDA for performing classification
+'''We will generate a random covariance matrix for each of our 2 classes. With this matrix we will generate a dataset for each of the class, with each class having 10
+attributes and 1000 rows. We then combine the data and split it into Train and Test sets. We calculate the error percentage of the original data set. We then remove 1
+column from the data set one by one and then calculate the error percentage with the one column removed. We then remove the column which caused the least error from the
+original dataset. We redo this process again on the reduced dataset till we find the 5 best attributes among the 10.'''
 
 #Importing Libraries
 import numpy as np
